@@ -1,5 +1,5 @@
 var express = require('express');
-var exphbs  = require('express-handlebars');
+var exphbs = require('express-handlebars');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
+var svcauth = require('./routes/svc.auth');
 var users = require('./routes/users');
 
 var app = express();
@@ -21,7 +22,7 @@ app.set('view engine', 'handlebars');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -33,14 +34,37 @@ app.use('/js/jquery', express.static(__dirname + '/node_modules/jquery/dist')); 
 app.use('/js/angular', express.static(__dirname + '/node_modules/angular')); // redirect angular JS
 app.use('/js/angular-route', express.static(__dirname + '/node_modules/angular-route')); // redirect angular-route JS
 
+// sqlite
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database(':memory:');
+db.serialize(function () {
+    db.run("CREATE TABLE if not exists authinfo (username TEXT, authtoken TEXT, authdate DATETIME)");
+
+    var stmt = db.prepare("INSERT INTO authinfo VALUES (?, ?, ?)");
+    stmt.run("Test1", "token111", new Date());
+    stmt.finalize();
+
+});
+app.use(function (req, res, next) {
+
+    console.log("added db");
+    req.db = db;
+    next();
+});
+
+
+// Routes
 app.use('/', routes);
+app.use('/svc/auth', svcauth);
 app.use('/users', users);
 
+
+
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use(function (req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handlers
@@ -48,23 +72,23 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
+    app.use(function (err, req, res, next) {
+        res.status(err.status || 500);
+        res.render('error', {
+            message: err.message,
+            error: err
+        });
     });
-  });
 }
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+app.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+        message: err.message,
+        error: {}
+    });
 });
 
 
