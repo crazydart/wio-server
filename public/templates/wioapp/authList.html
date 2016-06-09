@@ -1,4 +1,4 @@
-<div>
+<div class="row">
 
     <div class="table-responsive">
         <table class="table table-striped">
@@ -18,6 +18,7 @@
             </tr>
             </tbody>
         </table>
+        <p ng-show="addAccountSuccess != null" class="text-success">{{addAccountSuccess}}</p>
     </div>
 
     <form ng-submit="addAccount()" class="form-inline">
@@ -29,6 +30,7 @@
             <label class="sr-only" for="password">Password</label>
             <input ng-model="password" type="password" class="form-control" id="password" placeholder="Password">
         </div>
+        <p ng-show="addAccountError != null" class="text-success">{{addAccountError}}</p>
         <button type="submit" class="btn btn-default">Add Account</button>
     </form>
 </div>

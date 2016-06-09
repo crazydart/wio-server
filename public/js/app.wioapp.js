@@ -36,18 +36,40 @@ wioApp.controller('authListController', function authListController($scope, $htt
     $scope.username = null;
     $scope.password = null;
 
-    $http.get("http://localhost:3000/svc/auth").then(function(response) {
+    $scope.refreshAccounts = function() {
 
-        $scope.accounts = response.data;
-    });
+        $http.get("/svc/auth").then(function (response) {
 
-    $scope.addAccount = function() {
-
-        $scope.accounts.push({
-           id: 0,
-            username: $scope.username,
-            authtoken: "111",
-            authdate: new Date()
+            $scope.accounts = response.data;
         });
     }
+
+    $scope.addAccount = function () {
+
+        $scope.addAccountError = null;
+        $scope.addAccountSuccess = null;;
+
+        var data = {
+
+            username: $scope.username,
+            password: $scope.password
+        };
+
+        $http.post('/svc/auth', data)
+            .success(function (data, status, headers, config) {
+
+                $scope.addAccountSuccess = "Account Added";
+
+                $scope.username = null;
+                $scope.password = null;
+
+                $scope.refreshAccounts();
+            })
+            .error(function (data, status, header, config) {
+
+                $scope.addAccountError = "Error adding account!";
+            });
+    }
+
+    $scope.refreshAccounts();
 });
