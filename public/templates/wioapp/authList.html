@@ -1,7 +1,34 @@
-
 <div>
 
-    <ul ng-repeat="account in accounts">
-        <li>{{account.username}}</li>
-    </ul>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Username Name</th>
+                <th>Token</th>
+                <th>Date Authenticated</th>
+            </tr>
+            </thead>
+
+            <tbody ng-repeat="account in accounts">
+            <tr>
+                <th scope="row">{{account.username}}</th>
+                <td>{{account.authtoken}}</td>
+                <td>{{account.authdate}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <form ng-submit="addAccount()" class="form-inline">
+        <div class="form-group">
+            <label class="sr-only" for="username">Email address</label>
+            <input ng-model="username" name="username" type="email" class="form-control" id="username" placeholder="Email">
+        </div>
+        <div class="form-group">
+            <label class="sr-only" for="password">Password</label>
+            <input ng-model="password" type="password" class="form-control" id="password" placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-default">Add Account</button>
+    </form>
 </div>
