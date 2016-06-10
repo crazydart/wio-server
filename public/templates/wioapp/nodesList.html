@@ -1,0 +1,30 @@
+<div class="row">
+
+    <h2>Nodes</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Key</th>
+                <th>Serial Number</th>
+                <th>Data Server</th>
+                <th>Board</th>
+                <th>Online?</th>
+            </tr>
+            </thead>
+
+            <tbody ng-repeat="node in nodes">
+            <tr>
+                <th scope="row">{{node.name}}</th>
+                <td>{{node.node_key}}</td>
+                <td>{{node.node_sn}}</td>
+                <td>{{node.dataxserver}}</td>
+                <td>{{node.board}}</td>
+                <td>{{node.online}}</td>
+            </tr>
+            </tbody>
+        </table>
+        <p ng-show="errorMessage != null" class="bg-danger">{{errorMessage}}</p>
+    </div>
+</div>

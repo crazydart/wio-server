@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var svcauth = require('./routes/svc.auth');
-var users = require('./routes/users');
+var svcnodes = require('./routes/svc.nodes');
 
 var app = express();
 
@@ -28,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/js/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS
 app.use('/css/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
+app.use('/css/fonts', express.static(__dirname + '/node_modules/bootstrap/dist/fonts')); // redirect fonts bootstrap
 
 app.use('/js/jquery', express.static(__dirname + '/node_modules/jquery/dist')); // redirect JS jQuery
 
@@ -36,13 +37,14 @@ app.use('/js/angular-route', express.static(__dirname + '/node_modules/angular-r
 
 // sqlite
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database(':memory:');
+// var db = new sqlite3.Database(':memory:');
+var db = new sqlite3.Database('wioserverdata.sqlite');
 db.serialize(function () {
-    db.run("CREATE TABLE if not exists authinfo (username TEXT, authtoken TEXT, authdate DATETIME)");
+    db.run("CREATE TABLE if not exists authinfo (username TEXT, authtoken TEXT, userid TEXT, authdate DATETIME)");
 
-    var stmt = db.prepare("INSERT INTO authinfo VALUES (?, ?, ?)");
-    stmt.run("Test1", "token111", new Date());
-    stmt.finalize();
+    // var stmt = db.prepare("INSERT INTO authinfo VALUES (?, ?, ?)");
+    // stmt.run("Test1", "token111", new Date());
+    // stmt.finalize();
 
 });
 app.use(function (req, res, next) {
@@ -63,7 +65,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 // Routes
 app.use('/', routes);
 app.use('/svc/auth', svcauth);
-app.use('/users', users);
+app.use('/svc/nodes', svcnodes);
 
 
 

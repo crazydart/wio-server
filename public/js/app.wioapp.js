@@ -14,6 +14,10 @@ var wioApp = angular.module('wioApp').config(['$locationProvider', '$routeProvid
             templateUrl: '/templates/wioapp/authList.html',
             controller: 'authListController',
             activetab: 'auth'
+        }).when('/nodes', {
+            templateUrl: '/templates/wioapp/nodesList.html',
+            controller: 'nodesController',
+            activetab: 'nodes'
         }).otherwise('/');
     }
 ]);
@@ -31,12 +35,24 @@ wioApp.controller('indexController', function indexController($scope) {
     $scope.test = "test value";
 });
 
+wioApp.controller('nodesController', function nodesController($scope, $http) {
+    $scope.getNodes = function() {
+
+        $http.get("/svc/nodes").then(function (response) {
+
+            $scope.nodes = response.data.nodes;
+        });
+    };
+
+    $scope.getNodes();
+});
+
 wioApp.controller('authListController', function authListController($scope, $http) {
 
     $scope.username = null;
     $scope.password = null;
 
-    $scope.refreshAccounts = function() {
+    $scope.refreshAccounts = function () {
 
         $http.get("/svc/auth").then(function (response) {
 
@@ -47,7 +63,8 @@ wioApp.controller('authListController', function authListController($scope, $htt
     $scope.addAccount = function () {
 
         $scope.addAccountError = null;
-        $scope.addAccountSuccess = null;;
+        $scope.addAccountSuccess = null;
+        ;
 
         var data = {
 
@@ -67,9 +84,24 @@ wioApp.controller('authListController', function authListController($scope, $htt
             })
             .error(function (data, status, header, config) {
 
-                $scope.addAccountError = "Error adding account!";
+                $scope.addAccountError = data.errorMessage;
             });
-    }
+    };
+
+    $scope.deleteAccount = function (email) {
+
+        $http.delete('/svc/auth', {params: {email: email}})
+            .success(function (data, status, headers, config) {
+
+                $scope.addAccountSuccess = "Account Removed";
+
+                $scope.refreshAccounts();
+            })
+            .error(function (data, status, header, config) {
+
+                $scope.addAccountError = data.errorMessage;
+            });
+    };
 
     $scope.refreshAccounts();
 });

@@ -6,7 +6,8 @@
             <tr>
                 <th>Username Name</th>
                 <th>Token</th>
-                <th>Date Authenticated</th>
+                <th>User ID</th>
+                <th></th>
             </tr>
             </thead>
 
@@ -14,7 +15,8 @@
             <tr>
                 <th scope="row">{{account.username}}</th>
                 <td>{{account.authtoken}}</td>
-                <td>{{account.authdate}}</td>
+                <td>{{account.userid}}</td>
+                <td><span ng-click="deleteAccount(account.username)" class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></td>
             </tr>
             </tbody>
         </table>
@@ -24,13 +26,14 @@
     <form ng-submit="addAccount()" class="form-inline">
         <div class="form-group">
             <label class="sr-only" for="username">Email address</label>
-            <input ng-model="username" name="username" type="email" class="form-control" id="username" placeholder="Email">
+            <input ng-model="username" name="username" type="email" class="form-control" id="username"
+                   placeholder="Email">
         </div>
         <div class="form-group">
             <label class="sr-only" for="password">Password</label>
             <input ng-model="password" type="password" class="form-control" id="password" placeholder="Password">
         </div>
-        <p ng-show="addAccountError != null" class="text-success">{{addAccountError}}</p>
+        <p ng-show="addAccountError != null" class="bg-danger">{{addAccountError}}</p>
         <button type="submit" class="btn btn-default">Add Account</button>
     </form>
 </div>
